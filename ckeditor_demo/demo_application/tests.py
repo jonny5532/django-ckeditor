@@ -9,18 +9,13 @@ SELENIUM_BROWSER = FIREFOX
 
 from django.conf import settings
 from django.contrib.staticfiles.finders import find
-from django.test import LiveServerTestCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.test.utils import override_settings
 
-if SELENIUM_BROWSER == CHROMIUM:
-    from selenium import webdriver
-elif SELENIUM_BROWSER == FIREFOX:
-    from selenium.webdriver.firefox.webdriver import WebDriver
-else:
-    raise ValueError('a browser must be picked to run selenium tests')
+from selenium import webdriver
 
 
-class TestAdminPanelWidget(LiveServerTestCase):
+class TestAdminPanelWidget(StaticLiveServerTestCase):
     fixtures = ['test_admin.json']
 
     @classmethod
@@ -28,7 +23,7 @@ class TestAdminPanelWidget(LiveServerTestCase):
         if SELENIUM_BROWSER == CHROMIUM:
             cls.selenium = webdriver.Chrome(executable_path='/usr/lib/chromium-browser/chromedriver')
         elif SELENIUM_BROWSER == FIREFOX:
-             cls.selenium = WebDriver()
+            cls.selenium = webdriver.Firefox()
         super(TestAdminPanelWidget, cls).setUpClass()
 
     @classmethod
@@ -75,17 +70,17 @@ class TestAdminPanelWidget(LiveServerTestCase):
         sleep(1)
 
     def _go_to_upload_tab(self):
-        self.selenium.find_element_by_id("cke_Upload_116").click()
+        self.selenium.find_element_by_id("cke_Upload_118").click()
         sleep(1)
 
     def _switch_to_form_iframe(self):
-        iframe = self.selenium.find_element_by_id('cke_111_fileInput')
-        self.selenium.switch_to_frame(iframe)
+        iframe = self.selenium.find_element_by_id('cke_113_fileInput')
+        self.selenium.switch_to.frame(iframe)
 
     def _upload_image(self):
-        input = self.selenium.find_element_by_id("cke_111_fileInput_input")
+        input = self.selenium.find_element_by_id("cke_113_fileInput_input")
         input.send_keys(self._get_upload_file())
-        self.selenium.switch_to_default_content()
+        self.selenium.switch_to.default_content()
         self.selenium.find_element_by_class_name("cke_dialog_ui_fileButton").click()
         sleep(2)
 

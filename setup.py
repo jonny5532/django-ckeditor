@@ -9,12 +9,12 @@ def get_source_files():
 
 setup(
     name='django-ckeditor',
-    version='4.4.7',
+    version='4.5.0',
     description='Django admin CKEditor integration.',
     long_description=open('README.rst', 'r').read() + open('AUTHORS.rst', 'r').read() + open('CHANGELOG.rst', 'r').read(),
     author='Shaun Sephton & Piotr Malinski',
     author_email='riklaunim@gmail.com',
-    url='https://github.com/shaunsephton/django-ckeditor',
+    url='https://github.com/django-ckeditor/django-ckeditor',
     packages=find_packages(exclude=["*.demo"]),
     install_requires=[
         'Django',
