@@ -58,6 +58,9 @@ class ImageUploadView(generic.View):
         if backend.should_create_thumbnail(saved_path):
             backend.create_thumbnail(saved_path)
 
+        if saved_path.startswith("/"): #is an absolute path!
+            saved_path = os.path.relpath(saved_path, settings.MEDIA_ROOT)
+
         url = utils.get_media_url(saved_path)
 
         # Respond with Javascript sending ckeditor upload url.
@@ -116,17 +119,18 @@ def get_files_browse_urls(user=None):
     files = []
     for filename in get_image_files(user=user):
         src = utils.get_media_url(filename)
-        visible_filename = None
-        if is_image(src):
-            if getattr(settings, 'CKEDITOR_IMAGE_BACKEND', None):
+        if getattr(settings, 'CKEDITOR_IMAGE_BACKEND', None):
+            if is_image(src):
                 thumb = utils.get_media_url(utils.get_thumb_filename(filename))
+                visible_filename = None
             else:
-                thumb = src
+                thumb = utils.get_icon_filename(filename)
+                visible_filename = os.path.split(filename)[1]
+                if len(visible_filename) > 20:
+                    visible_filename = visible_filename[0:19] + '...'
         else:
-            thumb = utils.get_icon_filename(filename)
-            visible_filename = os.path.split(filename)[1]
-            if len(visible_filename) > 20:
-                visible_filename = visible_filename[0:19] + '...'
+            visible_filename = None
+            thumb = src
         files.append({
             'thumb': thumb,
             'src': src,
